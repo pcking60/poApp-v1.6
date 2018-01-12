@@ -39,38 +39,43 @@
                });
         }
         else {
-            if ($scope.isManager && !$scope.isAdmin && !$scope.isSupport) // is manager
+            if (!$scope.isAdmin) // is manager or supporter or accounter
             {
-                $stateParams.id = authService.authentication.userName;
-                apiService.get('/api/applicationUser/userinfo',
-                    null,
+                var config = {
+                    params: {
+                        username: authService.authentication.userName
+                    }
+                }
+                apiService.get('/api/district/getbyusername',
+                    config,
                     function (response) {
-                        $stateParams.id = response.data.POID;
+                        $stateParams.id = response.data.ID;
                         getListUser();
                     },
                     function (response) {
                         notificationService.displayError('Không tải được danh sách người dùng.');
                     });
             }
-            else {
-                if (!$scope.isAdmin && $scope.isSupport) // is supporter
-                {
-                    $stateParams.id = authService.authentication.userName;
-                    apiService.get('/api/applicationUser/userinfo',
-                        null,
-                        function (response) {
-                            $stateParams.id = response.data.POID;
-                            getListUser();
-                        },
-                        function (response) {
-                            notificationService.displayError('Không tải được danh sách người dùng.');
-                        });
-                }
+            else { // is admin
+                //if (!$scope.isAdmin && $scope.isSupport) // is supporter
+                //{
+                //    $stateParams.id = authService.authentication.userName;
+                //    apiService.get('/api/applicationUser/userinfo',
+                //        null,
+                //        function (response) {
+                //            $stateParams.id = response.data.POID;
+                //            getListUser();
+                //        },
+                //        function (response) {
+                //            notificationService.displayError('Không tải được danh sách người dùng.');
+                //        });
+                //}
             }
         }
+
         $scope.getListUser = getListUser;
         function getListUser() {
-            apiService.get('/api/applicationUser/getuserbypoid/' + $stateParams.id,
+            apiService.get('/api/applicationUser/getuserbydistrictid/' + $stateParams.id,
                 null,
                 function (response) {
                     $scope.users = response.data;

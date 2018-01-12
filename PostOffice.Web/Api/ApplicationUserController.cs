@@ -133,6 +133,20 @@ namespace PostOffice.Web.Api
             });
         }
 
+        [Route("getuserbydistrictid/{id}")]
+        [HttpGet]
+        public HttpResponseMessage GetByDistrictId(HttpRequestMessage request, int id)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                var model = _userService.GetAllByDistrictId(id);
+                var responseData = Mapper.Map<IEnumerable<ApplicationUser>, IEnumerable<ApplicationUserViewModel>>(model);
+
+                var response = request.CreateResponse(HttpStatusCode.OK, responseData);
+                return response;
+            });
+        }
+
         [Route("detail/{id}")]
         [HttpGet]
         [Authorize(Roles = "ViewUser")]

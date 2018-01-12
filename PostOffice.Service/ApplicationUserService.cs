@@ -12,6 +12,8 @@ namespace PostOffice.Service
 
         IEnumerable<ApplicationUser> GetAllByPOID(int id);
 
+        IEnumerable<ApplicationUser> GetAllByDistrictId(int id);
+
         ApplicationUser getByUserName(string userName);
 
         bool CheckRole(string userName, string roleName);
@@ -44,6 +46,10 @@ namespace PostOffice.Service
         public IEnumerable<ApplicationUser> GetAllByPOID(int id)
         {
             return _userRepository.GetAllByPoId(id);
+        }
+        public IEnumerable<ApplicationUser> GetAllByDistrictId(int id)
+        {
+            return _userRepository.GetAllByDistrictId(id);
         }
 
         public bool CheckRole(string userName, string roleName)

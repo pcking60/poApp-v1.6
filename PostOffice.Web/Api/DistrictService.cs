@@ -111,6 +111,21 @@ namespace PostOffice.Web.Api
             });
         }
 
+        [Route("getbyusername")]
+        [HttpGet]
+        public HttpResponseMessage GetByUsername(HttpRequestMessage request, string userName)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                var model = _districtService.GetDistrictByUserName(userName);
+
+                var responseData = Mapper.Map<District, DistrictViewModel>(model);
+
+                var response = request.CreateResponse(HttpStatusCode.OK, responseData);
+                return response;
+            });
+        }
+
         [Route("create")]
         [HttpPost]
         [AllowAnonymous]

@@ -12,6 +12,8 @@ namespace PostOfiice.DAta.Repositories
 
         IEnumerable<ApplicationUser> GetAllByPoId(int id);
 
+        IEnumerable<ApplicationUser> GetAllByDistrictId(int id);
+
         int getNoUserByGroup(int GroupId);
 
         int getPoId(string userName);
@@ -98,5 +100,16 @@ namespace PostOfiice.DAta.Repositories
             return user;
         }
 
+        public IEnumerable<ApplicationUser> GetAllByDistrictId(int id)
+        {
+            var query = from u in DbContext.Users
+                        join p in DbContext.PostOffices
+                        on u.POID equals p.ID
+                        join d in DbContext.Districts
+                        on p.DistrictID equals d.ID
+                        where d.ID == id
+                        select u;
+            return query.ToList();
+        }
     }
 }
