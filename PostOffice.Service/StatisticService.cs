@@ -416,7 +416,10 @@ namespace PostOffice.Service
                 }
                 else //is basic user
                 {
-                    return _statisticRepository.Get_General_TCBC(fromDate, toDate, districtId, poId, currentUser);
+                    districtId = _districtRepository.GetDistrictByUserName(currentUser).ID;
+                    poId = _poRepository.GetPOByCurrentUser(currentUser).ID;
+                    userId = _userRepository.getByUserName(currentUser).Id;
+                    return _statisticRepository.Get_General_TCBC(fromDate, toDate, districtId, poId, userId);
                 }
             }
         }
