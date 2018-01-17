@@ -30,6 +30,7 @@ namespace PostOfiice.DAta.Repositories
 
         IEnumerable<Transaction> GetAllBy_Time_DistrictID_MainGroupId(DateTime fromDate, DateTime toDate, int districtId, int id);
         IEnumerable<Transaction> GetAllBy_Time_DistrictID_POID_MainGroupId(DateTime fromDate, DateTime toDate, int districtId, int poId, int id);
+        IEnumerable<Transaction> GetAllBy_Time_DistrictID_POID_UserId_MainGroupId(DateTime fromDate, DateTime toDate, int districtId, int poId, string userId,int id);
 
         IEnumerable<Transaction> GetAllByTimeAndPOID(DateTime fromDate, DateTime toDate, int id, string userId, int serviceId);
 
@@ -306,6 +307,28 @@ namespace PostOfiice.DAta.Repositories
                                 && ts.Status == true
                         select ts;
             return query.OrderBy(x => x.ID).ToList();
+        }
+
+        public IEnumerable<Transaction> GetAllBy_Time_DistrictID_POID_UserId_MainGroupId(DateTime fromDate, DateTime toDate, int districtId, int poId, string userId, int id)
+        {
+            var query = from g in DbContext.ServiceGroups
+                        join mg in DbContext.MainServiceGroups
+                        on g.MainServiceGroupId equals mg.Id
+                        join s in DbContext.Services
+                        on g.ID equals s.GroupID
+                        join ts in DbContext.Transactions
+                        on s.ID equals ts.ServiceId
+                        join u in DbContext.Users
+                        on ts.UserId equals u.Id
+                        join p in DbContext.PostOffices
+                        on u.POID equals p.ID
+                        where 
+                            p.DistrictID == districtId && 
+                            ts.Status == true && p.ID == poId && 
+                            mg.Id == id && (DbFunctions.TruncateTime(ts.TransactionDate) >= fromDate && DbFunctions.TruncateTime(ts.TransactionDate) <= toDate) &&
+                            u.Id == userId
+                        select ts;
+            return query;
         }
     }
 }

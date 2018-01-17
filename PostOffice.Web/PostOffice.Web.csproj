@@ -230,6 +230,7 @@
     <Content Include="app\components\login\loginView.min.html">
       <DependentUpon>loginView.html</DependentUpon>
     </Content>
+    <Content Include="app\components\statistic\chuc-nang-thong-ke.txt" />
     <Content Include="app\components\statistic\reportsController.js" />
     <Content Include="app\components\statistic\reportsController.min.js">
       <DependentUpon>reportsController.js</DependentUpon>

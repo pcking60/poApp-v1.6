@@ -180,20 +180,23 @@ namespace PostOffice.Service
                         if (userId == null)
                         {
                             districtId = _districtRepository.GetDistrictByUserName(currentUser).ID;
-                            poId = _poRepository.GetPOByCurrentUser(currentUser).ID;
+                            //poId = _poRepository.GetPOByCurrentUser(currentUser).ID;
                             return _statisticRepository.Export_By_Service_Group_And_Time_District_Po_BCCP(fromDate, toDate, districtId, poId);
                         }
                         else
                         {
                             districtId = _districtRepository.GetDistrictByUserName(currentUser).ID;
-                            poId = _poRepository.GetPOByCurrentUser(currentUser).ID;
+                            //poId = _poRepository.GetPOByCurrentUser(currentUser).ID;
                             return _statisticRepository.Export_By_Service_Group_And_Time_District_Po_User_BCCP(fromDate, toDate, districtId, poId, userSelected);
                         }
                     }
                 }
                 else //is basic user
                 {
-                    return _statisticRepository.Export_By_Service_Group_And_Time_District_Po_User_BCCP(fromDate, toDate, districtId, poId, currentUser);
+                    districtId = _districtRepository.GetDistrictByUserName(currentUser).ID;
+                    poId = _poRepository.GetPOByCurrentUser(currentUser).ID;
+                    userId = _userRepository.getByUserName(currentUser).Id;
+                    return _statisticRepository.Export_By_Service_Group_And_Time_District_Po_User_BCCP(fromDate, toDate, districtId, poId, userId);
                 }
             }
         }
@@ -327,13 +330,13 @@ namespace PostOffice.Service
                         if (userId == null)
                         {
                             districtId = _districtRepository.GetDistrictByUserName(currentUser).ID;
-                            poId = _poRepository.GetPOByCurrentUser(currentUser).ID;
+                            //poId = _poRepository.GetPOByCurrentUser(currentUser).ID;
                             return _statisticRepository.Export_By_Service_Group_And_Time_District_Po_PPTT(fromDate, toDate, districtId, poId);
                         }
                         else
                         {
                             districtId = _districtRepository.GetDistrictByUserName(currentUser).ID;
-                            poId = _poRepository.GetPOByCurrentUser(currentUser).ID;
+                            //poId = _poRepository.GetPOByCurrentUser(currentUser).ID;
                             return _statisticRepository.Export_By_Service_Group_And_Time_District_Po_User_PPTT(fromDate, toDate, districtId, poId, userId);
                         }
                     }
@@ -400,13 +403,13 @@ namespace PostOffice.Service
                         if (userId == null) //po && district are not null && user null
                         {
                             districtId = _districtRepository.GetDistrictByUserName(currentUser).ID;
-                            poId = _poRepository.GetPOByCurrentUser(currentUser).ID;
+                            //poId = _poRepository.GetPOByCurrentUser(currentUser).ID;
                             return _statisticRepository.Get_General_TCBC(fromDate, toDate, districtId, poId);
                         }
                         else // po && district && user are not null
                         {
                             districtId = _districtRepository.GetDistrictByUserName(currentUser).ID;
-                            poId = _poRepository.GetPOByCurrentUser(currentUser).ID;
+                            //poId = _poRepository.GetPOByCurrentUser(currentUser).ID;
                             return _statisticRepository.Get_General_TCBC(fromDate, toDate, districtId, poId, userSelected);
                         }
                     }

@@ -385,7 +385,10 @@ namespace PostOffice.Service
                 }
                 else
                 {
-                    return null;
+                    string userId = _userRepository.getByUserName(currentUser).Id;
+                    poId = _userRepository.getByUserName(currentUser).POID;
+                    districtId = _districtRepository.GetDistrictByUserName(currentUser).ID;
+                    return _transactionRepository.GetAllBy_Time_DistrictID_POID_UserId_MainGroupId(fromDate, toDate, districtId, poId, userId, bccpId);
                 }               
             }
         }
@@ -433,7 +436,10 @@ namespace PostOffice.Service
                 }
                 else
                 {
-                    return null;
+                    string userId = _userRepository.getByUserName(currentUser).Id;
+                    poId = _userRepository.getByUserName(currentUser).POID;
+                    districtId = _districtRepository.GetDistrictByUserName(currentUser).ID;
+                    return _transactionRepository.GetAllBy_Time_DistrictID_POID_UserId_MainGroupId(fromDate, toDate, districtId, poId, userId, tcbcId);
                 }
             }
 
@@ -482,7 +488,10 @@ namespace PostOffice.Service
                 }
                 else
                 {
-                    return null;
+                    string userId = _userRepository.getByUserName(currentUser).Id;
+                    poId = _userRepository.getByUserName(currentUser).POID;
+                    districtId = _districtRepository.GetDistrictByUserName(currentUser).ID;
+                    return _transactionRepository.GetAllBy_Time_DistrictID_POID_UserId_MainGroupId(fromDate, toDate, districtId, poId, userId, ppttId);
                 }
             }
         }

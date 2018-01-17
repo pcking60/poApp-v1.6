@@ -20,6 +20,7 @@
             totalVat: 0,
             totalCurrency: 0
         };
+
         //check role 
         $scope.isManager = authService.haveRole('Manager');
         $scope.isAdmin = authService.haveRole('Administrator');
@@ -83,6 +84,7 @@
                     notificationService.displayError('Không tải được danh sách nhân viên.');
                 });
         }
+
         $scope.keyword = '';
         $scope.search = search;
         $scope.deleteTransaction = deleteTransaction;
@@ -334,7 +336,8 @@
         $scope.authentication = authService.authentication;
         var userName = $scope.authentication.userName;
 
-        const ACCEPTABLE_OFFSET = 172800*1000;
+        // thoi gian cham tre 10 ngay
+        const ACCEPTABLE_OFFSET = 864000*1000;
 
         $scope.editEnabled = function(transaction)
         {

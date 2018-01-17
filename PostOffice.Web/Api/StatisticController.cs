@@ -126,7 +126,7 @@ namespace PostOffice.Web.Api
                 vm.CreatedBy = currentUser;
                 //check param đầu vào
 
-                #region data input
+                #region data input              
 
                 if (districtId != 0)
                 {
@@ -150,7 +150,7 @@ namespace PostOffice.Web.Api
                 }
 
                 #endregion data input
-                
+
                 switch (functionId)
                 {
                     #region case 1 Bảng kê thu tiền tại bưu cục - tổng hợp
@@ -196,10 +196,10 @@ namespace PostOffice.Web.Api
                     case 2:
                         vm.FunctionName = "Bảng kê thu tiền tại bưu cục - chi tiết";
                         // check if basic user
-                        if (!isAdmin && !isManager && !isSupport)
-                        {
-                            break;
-                        }
+                        //if (!isAdmin && !isManager && !isSupport)
+                        //{
+                        //    break;
+                        //}
                         #region BCCP
                         var q1 = _trasactionService.GetByCondition_BCCP(fd, td, districtId, poId, currentUser);
                         var c4 = q1.Count();
