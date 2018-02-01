@@ -73,7 +73,7 @@ namespace PostOffice.Web.Api
 
         [HttpGet]
         [Route("rp1")]
-        public async Task<HttpResponseMessage> RP1(HttpRequestMessage request, string fromDate, string toDate, int districtId, int functionId, int poId, string userId, int serviceId)
+        public async Task<HttpResponseMessage> RP1(HttpRequestMessage request, string fromDate, string toDate, int districtId, int functionId, int poId, string userSelected, int serviceId)
         {
             //check role
             bool isAdmin = false;
@@ -138,9 +138,9 @@ namespace PostOffice.Web.Api
                     po = _poService.GetByID(poId);
                     vm.Unit = po.Name;
                 }
-                if (!string.IsNullOrEmpty(userId))
+                if (!string.IsNullOrEmpty(userSelected))
                 {
-                    user = _userService.getByUserId(userId);
+                    user = _userService.getByUserId(userSelected);
                     vm.user = user.FullName;
                 }
                 if (serviceId != 0)
@@ -158,7 +158,7 @@ namespace PostOffice.Web.Api
                     case 1:
                         vm.FunctionName = "Bảng kê thu tiền tại bưu cục - tổng hợp";
                         // BCCP
-                        var query = _statisticService.Export_By_Service_Group_And_Time_District_Po_BCCP(fromDate, toDate, districtId, poId, currentUser, userId);
+                        var query = _statisticService.Export_By_Service_Group_And_Time_District_Po_BCCP(fromDate, toDate, districtId, poId, currentUser, userSelected);
                         var c = query.Count();
                         var responseBCCP = Mapper.Map<IEnumerable<Export_By_Service_Group_And_Time_District_Po_BCCP>, IEnumerable<Export_By_Service_Group_And_Time_District_Po_BCCP_VM>>(query);
                         foreach (var item in responseBCCP)
@@ -168,7 +168,7 @@ namespace PostOffice.Web.Api
                         }
                         var responseBCCP1 = Mapper.Map<IEnumerable<Export_By_Service_Group_And_Time_District_Po_BCCP_VM>, IEnumerable<Export_Template_VM>>(responseBCCP);
                         //TCBC
-                        var query2 = _statisticService.Get_General_TCBC(fromDate, toDate, districtId, poId, currentUser, userId);
+                        var query2 = _statisticService.Get_General_TCBC(fromDate, toDate, districtId, poId, currentUser, userSelected);
                         var c2 = query2.Count();
                         var responseTCBC = Mapper.Map<IEnumerable<Get_General_TCBC>, IEnumerable<Get_General_TCBC_VM>>(query2);
                         foreach (var item in responseTCBC)
@@ -177,7 +177,7 @@ namespace PostOffice.Web.Api
                         }
                         var responseTCBC1 = Mapper.Map<IEnumerable<Get_General_TCBC_VM>, IEnumerable<Export_Template_TCBC>>(responseTCBC);
                         //PPTT
-                        var query3 = _statisticService.Export_By_Service_Group_And_Time_District_Po_PPTT(fromDate, toDate, districtId, poId, currentUser, userId);
+                        var query3 = _statisticService.Export_By_Service_Group_And_Time_District_Po_PPTT(fromDate, toDate, districtId, poId, currentUser, userSelected);
                         var responsePPTT = Mapper.Map<IEnumerable<Export_By_Service_Group_And_Time_District_Po_BCCP>, IEnumerable<Export_By_Service_Group_And_Time_District_Po_BCCP_VM>>(query3);
                         foreach (var item in responsePPTT)
                         {
@@ -204,6 +204,7 @@ namespace PostOffice.Web.Api
                         var q1 = _trasactionService.GetByCondition_BCCP(fd, td, districtId, poId, currentUser);
                         var c4 = q1.Count();
                         var BCCP = Mapper.Map<IEnumerable<Transaction>, IEnumerable<TransactionViewModel>>(q1);
+                        #region foreach                      
                         foreach (var item in BCCP)
                         {
                             item.VAT = _serviceService.GetById(item.ServiceId).VAT;
@@ -223,6 +224,7 @@ namespace PostOffice.Web.Api
                             item.TotalMoneyBeforeVat = (item.TotalCash + item.TotalDebt) / (decimal)item.VAT;
                             item.TotalVat = (item.TotalCash + item.TotalDebt) - ((item.TotalCash + item.TotalDebt) / (decimal)item.VAT);
                         }
+                        #endregion
                         var resBCCP = Mapper.Map<IEnumerable<TransactionViewModel>, IEnumerable<Export_Template_VM>>(BCCP);
                         foreach (var item in resBCCP)
                         {
@@ -240,11 +242,12 @@ namespace PostOffice.Web.Api
                         var q2 = _trasactionService.GetByCondition_TCBC(fd, td, districtId, poId, currentUser);
                         var c5 = q2.Count();
                         var TCBC = Mapper.Map<IEnumerable<Transaction>, IEnumerable<TransactionViewModel>>(q2);
+                        #region foreach
                         foreach (var item in TCBC)
                         {
                             item.VAT = _serviceService.GetById(item.ServiceId).VAT;
-                            item.Quantity = Convert.ToInt32(_transactionDetailService.GetAllByCondition("Sản lượng", item.ID).Money);                            
-                            var Fe =  _transactionDetailService.GetFeeById("Số tiền cước", item.ID);
+                            item.Quantity = Convert.ToInt32(_transactionDetailService.GetAllByCondition("Sản lượng", item.ID).Money);
+                            var Fe = _transactionDetailService.GetFeeById("Số tiền cước", item.ID);
                             if (Fe == null)
                             {
                                 item.Fee = 0;
@@ -269,6 +272,7 @@ namespace PostOffice.Web.Api
                                 item.TotalColection = 0;
                             }
                         }
+                        #endregion
                         var resTCBC_temp = Mapper.Map<IEnumerable<TransactionViewModel>, IEnumerable<Get_General_TCBC>>(TCBC);
                         var resTCBC_temp2 = Mapper.Map<IEnumerable<Get_General_TCBC>, IEnumerable<Get_General_TCBC_VM>>(resTCBC_temp);
                         foreach (var item in resTCBC_temp2)
@@ -319,26 +323,57 @@ namespace PostOffice.Web.Api
 
                     case 3:
                         vm.FunctionName = "Bảng kê thu tiền theo nhân viên";
-                        var c3_bccp = _statisticService.Export_By_Service_Group_And_Time_District_Po_BCCP(fromDate, toDate, districtId, poId, currentUser, userId);
+
+                        // ===============   BCCP   ===================
+                        var c3_bccp = _statisticService.Export_By_Service_Group_And_Time_District_Po_BCCP(fromDate, toDate, districtId, poId, currentUser, userSelected);
+                        int test = c3_bccp.Count();
                         var responseBCCP3 = Mapper.Map<IEnumerable<Export_By_Service_Group_And_Time_District_Po_BCCP>, IEnumerable<Export_By_Service_Group_And_Time_District_Po_BCCP_VM>>(c3_bccp);
+
                         foreach (var item in responseBCCP3)
                         {
                             item.TotalMoneyBeforeVat = (item.TotalCash + item.TotalDebt) / (decimal)item.VAT;
+                            item.TotalVat = (item.TotalCash + item.TotalDebt) - ((item.TotalCash + item.TotalDebt) / (decimal)item.VAT);
                         }
-                        var c3_pptt = _statisticService.Export_By_Service_Group_And_Time_District_Po_PPTT(fromDate, toDate, districtId, poId, currentUser, userId);
+
+                        var c3_bccp_final = Mapper.Map<IEnumerable<Export_By_Service_Group_And_Time_District_Po_BCCP_VM>, IEnumerable<Export_Template_VM>>(responseBCCP3);
+                        //foreach (var item in responseBCCP3)
+                        //{
+                        //    item.TotalMoneyBeforeVat = (item.TotalCash + item.TotalDebt) / (decimal)item.VAT;
+                        //}
+
+                        // ===============   PPTT   ===================
+                        var c3_pptt = _statisticService.Export_By_Service_Group_And_Time_District_Po_PPTT(fromDate, toDate, districtId, poId, currentUser, userSelected);
+                        test = c3_pptt.Count();
                         var responsePPTT3 = Mapper.Map<IEnumerable<Export_By_Service_Group_And_Time_District_Po_BCCP>, IEnumerable<Export_By_Service_Group_And_Time_District_Po_BCCP_VM>>(c3_pptt);
                         foreach (var item in responsePPTT3)
                         {
                             item.TotalMoneyBeforeVat = (item.TotalCash + item.TotalDebt) / (decimal)item.VAT;
+                            item.TotalVat = (item.TotalCash + item.TotalDebt) - ((item.TotalCash + item.TotalDebt) / (decimal)item.VAT);
                         }
-                        var c3_tcbc = _statisticService.Export_By_Service_Group_TCBC(fromDate, toDate, districtId, poId, currentUser, userId);
-                        var responseTCBC3 = Mapper.Map<IEnumerable<Export_By_Service_Group_TCBC>, IEnumerable<Export_By_Service_Group_TCBC_Vm>>(c3_tcbc);
+                        var c3_pptt_final = Mapper.Map<IEnumerable<Export_By_Service_Group_And_Time_District_Po_BCCP_VM>, IEnumerable<Export_Template_VM>>(responsePPTT3);
+                        //foreach (var item in responsePPTT3)
+                        //{
+                        //    item.TotalMoneyBeforeVat = (item.TotalCash + item.TotalDebt) / (decimal)item.VAT;
+                        //}
+
+                        // ===============   TCBC   ===================
+                        var c3_tcbc = _statisticService.Get_General_TCBC(fromDate, toDate, districtId, poId, currentUser, userSelected);
+                        test = c3_tcbc.Count();
+                        var responseTCBC3 = Mapper.Map<IEnumerable<Get_General_TCBC>, IEnumerable<Get_General_TCBC_VM>>(c3_tcbc);
                         foreach (var item in responseTCBC3)
                         {
-                            item.TotalMoney = (item.TotalColection + item.TotalPay) / (decimal)item.VAT;
+                            item.Tax = item.Sales - item.Sales / (decimal)item.VAT;
                         }
+                        var c3_tcbc_final = Mapper.Map<IEnumerable<Get_General_TCBC_VM>, IEnumerable<Export_Template_TCBC>>(responseTCBC3);
+                        //var c3_tcbc = _statisticService.Export_By_Service_Group_TCBC(fromDate, toDate, districtId, poId, currentUser, userSelected);
+                        //test = c3_tcbc.Count();
+                        //var responseTCBC3 = Mapper.Map<IEnumerable<Export_By_Service_Group_TCBC>, IEnumerable<Export_By_Service_Group_TCBC_Vm>>(c3_tcbc);
+                        //foreach (var item in responseTCBC3)
+                        //{
+                        //    item.TotalMoney = (item.TotalColection + item.TotalPay) / (decimal)item.VAT;
+                        //}
                         //var responseOther3 = _statisticService.Export_By_Service_Group_And_Time(fromDate, toDate, otherId, districtId, poId, userId);
-                        await ReportHelper.Export_By_Service_Group_And_Time(responseBCCP3.ToList(), responsePPTT3.ToList(), responseTCBC3.ToList(), fullPath, vm);
+                        await ReportHelper.RP2_1(c3_bccp_final.ToList(), c3_pptt_final.ToList(), c3_tcbc_final.ToList(), fullPath, vm);
 
                         break;
                     #endregion case 3 Bảng kê thu tiền theo nhân viên

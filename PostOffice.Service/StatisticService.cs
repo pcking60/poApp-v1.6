@@ -262,7 +262,7 @@ namespace PostOffice.Service
                         else // po && district && user are not null
                         {
                             districtId = _districtRepository.GetDistrictByUserName(currentUser).ID;
-                            poId = _poRepository.GetPOByCurrentUser(currentUser).ID;
+                            poId = user.POID;
                             return _statisticRepository.Export_By_Service_Group_And_Time_District_Po_User_TCBC(fromDate, toDate, districtId, poId, userSelected);
                         }
                     }
@@ -282,7 +282,7 @@ namespace PostOffice.Service
             bool isSupport = _userRepository.CheckRole(currentUser, "Support");
 
             //get user info
-            var user = _userRepository.getByUserName(userSelected);
+            var user = _userRepository.getByUserId(userSelected);
             string userId = null;
             if (user != null)
             {

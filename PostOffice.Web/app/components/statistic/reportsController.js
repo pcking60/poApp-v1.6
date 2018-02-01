@@ -13,7 +13,7 @@
             users: [],
             districtId: 0,
             posId: 0,
-            userId: '',
+            userSelected: '',
             serviceId: 0,          
         };
 
@@ -123,7 +123,7 @@
                     districtId: $scope.report.districtId || 0,
                     functionId: $scope.report.functionId || 0,
                     poId: $scope.report.poId || 0,
-                    userId: $scope.report.userId || '',
+                    userSelected: $scope.report.userId || '',
                     serviceId: $scope.report.serviceId || 0,
                 }
             }
