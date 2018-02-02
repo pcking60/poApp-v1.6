@@ -651,8 +651,8 @@ namespace PostOffice.Common
                     ws.Cells["A1:Z1000"].Style.Font.SetFromFont(new Font("Segoe UI", 9));
                     ws.Cells["A1:Z1000"].AutoFitColumns();
                     //header
-                    ws.Cells["A1:B1"].Merge = true;
-                    ws.Cells["A1:B1"].Value = "TỔNG CÔNG TY BƯU ĐIỆN VIỆT NAM \n BƯU ĐIỆN TỈNH SÓC TRĂNG";
+                    ws.Cells["A1:c1"].Merge = true;
+                    ws.Cells["A1:c1"].Value = "TỔNG CÔNG TY BƯU ĐIỆN VIỆT NAM \n BƯU ĐIỆN TỈNH SÓC TRĂNG";
                     ws.Row(1).Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                     ws.Row(1).Height = 29.35;
                     ws.Row(1).Style.Font.Bold = true;
