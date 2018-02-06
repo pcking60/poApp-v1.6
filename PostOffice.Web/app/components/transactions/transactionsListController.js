@@ -337,7 +337,7 @@
         var userName = $scope.authentication.userName;
 
         // thoi gian cham tre 10 ngay
-        const ACCEPTABLE_OFFSET = 864000*1000;
+        const ACCEPTABLE_OFFSET = 2678400 * 1000 * 2;
 
         $scope.editEnabled = function(transaction)
         {
