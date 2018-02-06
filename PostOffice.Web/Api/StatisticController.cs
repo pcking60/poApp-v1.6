@@ -225,7 +225,7 @@ namespace PostOffice.Web.Api
                             item.TotalVat = (item.TotalCash + item.TotalDebt) - ((item.TotalCash + item.TotalDebt) / (decimal)item.VAT);
                         }
                         #endregion
-                        var resBCCP = Mapper.Map<IEnumerable<TransactionViewModel>, IEnumerable<Export_Template_VM>>(BCCP);
+                       var resBCCP = Mapper.Map<IEnumerable<TransactionViewModel>, IEnumerable<Export_Template_VM>>(BCCP);
                         foreach (var item in resBCCP)
                         {
                             var stt = item.STT;

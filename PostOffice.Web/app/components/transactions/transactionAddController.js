@@ -18,12 +18,12 @@
         //check role 
         $scope.isManager = authService.haveRole('Manager');
         $scope.isAdmin = authService.haveRole('Administrator');
-        $scope.days = 2;
+        $scope.days = 31;
         if ($scope.isAdmin) {
-            $scope.days = 30;
+            $scope.days = 365;
         }
         if ($scope.isManager) {
-            $scope.days = 7;
+            $scope.days = 60;
         }
 
         $(function () {
@@ -40,10 +40,10 @@
             $scope.transaction.ServiceId = $scope.transaction.Service.ID;           
             $scope.transaction.TransactionDate = $("#datetimepicker1").find("input").val();
             
-            const ACCEPTABLE_OFFSET = 172800 * 1000;
+            const ACCEPTABLE_OFFSET = 2678400 * 1000 * 2;
             if ((new Date().getTime() - new Date($scope.transaction.TransactionDate).getTime()) > ACCEPTABLE_OFFSET)
             {
-                notificationService.displayError('Ngày giao dịch đã chậm quá 2 ngày');
+                notificationService.displayError('Ngày giao dịch đã chậm quá 30 ngày');
             }
             else
             {

@@ -394,7 +394,7 @@ namespace PostOffice.Web.Api
             }
             else
             {
-                const double dateDelete = 10.5 * 24 * 60 * 60 * 1000;
+                const double dateDelete = 30.5 * 24 * 60 * 60 * 1000;
                 var dbTransaction = _transactionService.GetById(transactionVM.ID);
 
                 var currentDate = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
@@ -410,7 +410,7 @@ namespace PostOffice.Web.Api
 
                 if (isValid)
                 {
-                    string message = "Chỉ cho phép chỉnh sửa trong thời hạn 10 ngày";
+                    string message = "Chỉ cho phép chỉnh sửa trong thời hạn 30 ngày";
                     return request.CreateResponse(HttpStatusCode.BadRequest, message);
                 }
                 else
