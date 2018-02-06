@@ -66,7 +66,7 @@
         $(function () {
             $('#datetimepicker1').datetimepicker({
                 maxDate: moment(),
-                minDate: moment().subtract(3, 'day'),
+                minDate: moment().subtract(30, 'day'),
 
             });
         });
